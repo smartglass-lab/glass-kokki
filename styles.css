@@ -1,0 +1,112 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 600px;
+  height: 600px;
+  overflow: hidden;
+  background: #000000; /* 加算式ディスプレイでは透明＝現実の部屋が透ける */
+  color: #FFFFFF;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+  user-select: none;
+}
+
+#app { position: relative; width: 600px; height: 600px; }
+.hidden { display: none !important; }
+.screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+canvas { display: block; }
+
+/* ---------- HUD ---------- */
+#hud {
+  position: absolute; left: 0; top: 0; width: 600px; height: 40px; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px;
+  font-size: 19px; font-weight: 700; color: #e6e9f0;
+  text-shadow: 0 0 6px rgba(0,0,0,0.9);
+}
+#hud-right { color: #ffd166; }
+
+#hint {
+  position: absolute; left: 0; bottom: 0; width: 600px; height: 40px; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700; color: #cfd5e0;
+  text-shadow: 0 0 6px rgba(0,0,0,0.9);
+}
+#hint.hot { color: #ffd166; }
+
+/* ---------- パネル ---------- */
+.panel {
+  width: 480px;
+  padding: 20px 26px;
+  border-radius: 18px;
+  background: #14161c;
+  border: 2px solid #2e3340;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(0,0,0,0.6);
+}
+.t-logo { display: flex; justify-content: center; margin-bottom: 6px; }
+.t-logo canvas { border: 2px solid #3a3f4b; border-radius: 6px; }
+.t-title { font-size: 34px; font-weight: 800; letter-spacing: 1px; }
+.t-sub { font-size: 16px; color: #9aa3b5; margin: 4px 0 14px; }
+.t-rec { font-size: 15px; color: #9aa3b5; margin-top: 12px; min-height: 18px; }
+.menu { display: flex; flex-direction: column; gap: 8px; }
+
+.rail-btn {
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: #1c1f27;
+  border: 2px solid #2e3340;
+  font-size: 21px; font-weight: 700; color: #dfe4ee;
+  opacity: 0.75;
+  transition: transform 160ms cubic-bezier(0.6, 0, 0.4, 1), border-color 160ms, opacity 160ms, background 160ms;
+  cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rail-btn.ghost { color: #aab2c2; }
+.rail-btn.cur {
+  opacity: 1; transform: scale(1.04);
+  border-color: #ffd166; box-shadow: 0 0 18px rgba(255, 209, 102, 0.45);
+}
+.rail-btn.ok { opacity: 1; border-color: #4ade80; background: #163a26; color: #d9ffe6; box-shadow: 0 0 18px rgba(74,222,128,0.45); }
+.rail-btn.ng { opacity: 1; border-color: #ff6b6b; background: #3a1a1a; color: #ffd6d6; }
+
+.h-title { font-size: 28px; font-weight: 800; margin-bottom: 10px; }
+.h-list { text-align: left; font-size: 16px; line-height: 1.45; color: #dfe4ee; margin: 0 0 14px 20px; }
+.h-list li { margin-bottom: 5px; }
+.h-list b { color: #ffd166; }
+
+/* ---------- ずかん ---------- */
+.book-flag { display: flex; justify-content: center; align-items: center; height: 310px; margin-top: 6px; }
+.book-flag canvas, .q-flag canvas, .l-card canvas { border: 2px solid #3a3f4b; border-radius: 6px; background: #0a0a0f; }
+.book-name { font-size: 40px; font-weight: 800; margin-top: 10px; line-height: 1.15; text-shadow: 0 0 10px rgba(0,0,0,0.9); }
+.book-en { font-size: 18px; color: #9aa3b5; margin-top: 2px; }
+.book-meta { font-size: 18px; color: #cfd5e0; margin-top: 8px; }
+.book-meta .sep { color: #4a5062; margin: 0 6px; }
+
+/* ---------- クイズ ---------- */
+.q-flag { display: flex; justify-content: center; align-items: center; height: 290px; margin-top: 10px; }
+.q-ask { font-size: 20px; font-weight: 700; color: #ffd166; margin: 6px 0 8px; height: 26px; text-shadow: 0 0 8px rgba(0,0,0,0.9); }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; width: 540px; }
+.grid .rail-btn { font-size: 20px; text-align: center; padding: 8px 10px; }
+
+/* ---------- そっくり ---------- */
+.l-ask { font-size: 26px; font-weight: 800; color: #ffd166; margin-bottom: 18px; text-shadow: 0 0 8px rgba(0,0,0,0.9); }
+.l-row { display: flex; gap: 22px; }
+.l-card {
+  padding: 8px; border-radius: 14px;
+  background: #14161c; border: 3px solid #2e3340; opacity: 0.7;
+  transition: transform 160ms cubic-bezier(0.6, 0, 0.4, 1), border-color 160ms, opacity 160ms;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.l-card .l-lbl { font-size: 18px; font-weight: 700; color: #9aa3b5; }
+.l-card.cur { opacity: 1; transform: scale(1.05); border-color: #ffd166; box-shadow: 0 0 22px rgba(255,209,102,0.5); }
+.l-card.ok { opacity: 1; border-color: #4ade80; box-shadow: 0 0 22px rgba(74,222,128,0.5); }
+.l-card.ng { opacity: 0.9; border-color: #ff6b6b; }
+.l-fb { font-size: 24px; font-weight: 800; margin-top: 18px; height: 30px; text-shadow: 0 0 8px rgba(0,0,0,0.9); }
+.l-fb.ok { color: #4ade80; }
+.l-fb.ng { color: #ff6b6b; }
+
+/* ---------- 結果 ---------- */
+.r-title { font-size: 30px; font-weight: 800; }
+.r-score { font-size: 56px; font-weight: 800; color: #ffd166; margin: 4px 0; }
+.r-sub { font-size: 18px; color: #9aa3b5; margin-bottom: 16px; }
+.btns { display: flex; flex-direction: column; gap: 8px; }

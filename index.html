@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=600, height=600, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="Meta Ray-Ban Display 用の国旗図鑑＆クイズ。世界93か国の国旗をCanvasで描画し、←→でめくる図鑑、4択クイズ、そっくり国旗の見分けクイズをタップとD-padだけで。依存ライブラリなし・オフライン動作。">
+  <meta name="mrbd-web-app-capable" content="yes">
+  <title>グラス国旗 — Glass Kokki</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <div id="hud">
+      <span id="hud-mode">🏳️ グラス国旗</span>
+      <span id="hud-right"></span>
+    </div>
+    <div id="hint"></div>
+
+    <!-- タイトル -->
+    <div id="title" class="screen">
+      <div class="panel">
+        <div class="t-logo"><canvas id="logo-flag" width="150" height="100"></canvas></div>
+        <div class="t-title">グラス国旗</div>
+        <div class="t-sub">93か国の国旗を、めくって・当てて・見分ける</div>
+        <div class="menu">
+          <div class="rail-btn cur" data-item="0">📖 ずかん</div>
+          <div class="rail-btn" data-item="1">❓ 国旗クイズ（10問）</div>
+          <div class="rail-btn" data-item="2">👀 そっくり国旗（10問）</div>
+          <div class="rail-btn" data-item="3">💡 あそびかた</div>
+        </div>
+        <div class="t-rec" id="t-rec"></div>
+      </div>
+    </div>
+
+    <!-- あそびかた -->
+    <div id="help" class="screen hidden">
+      <div class="panel">
+        <div class="h-title">💡 あそびかた</div>
+        <ul class="h-list">
+          <li><b>📖 ずかん</b> — ←→で1か国ずつ、↑↓で地域ごとにジャンプ。国名・首都つき</li>
+          <li><b>❓ 国旗クイズ</b> — 国旗を見て、←→↑↓で4つの国名からえらんでタップ</li>
+          <li><b>👀 そっくり国旗</b> — 国名を見て、似ている2つの国旗から正しい方を←→でえらんでタップ</li>
+          <li>どの画面も<b>タップ</b>だけで先へ進める。戻るジェスチャーは使わない</li>
+          <li>ベスト記録はこのグラスに保存される</li>
+        </ul>
+        <div class="rail-btn cur">◀ とじる</div>
+      </div>
+    </div>
+
+    <!-- ずかん -->
+    <div id="book" class="screen hidden">
+      <div class="book-flag"><canvas id="book-canvas" width="460" height="300"></canvas></div>
+      <div class="book-name" id="book-name">日本</div>
+      <div class="book-en" id="book-en">Japan</div>
+      <div class="book-meta"><span id="book-cap">首都 東京</span><span class="sep">｜</span><span id="book-region">アジア</span><span class="sep">｜</span><span id="book-idx">1 / 75</span></div>
+    </div>
+
+    <!-- クイズ（4択） -->
+    <div id="quiz" class="screen hidden">
+      <div class="q-flag"><canvas id="quiz-canvas" width="420" height="280"></canvas></div>
+      <div class="q-ask" id="q-ask">この国旗はどこの国？</div>
+      <div class="grid" id="q-grid">
+        <div class="rail-btn cur" data-c="0"></div>
+        <div class="rail-btn" data-c="1"></div>
+        <div class="rail-btn" data-c="2"></div>
+        <div class="rail-btn" data-c="3"></div>
+      </div>
+    </div>
+
+    <!-- そっくり（2択） -->
+    <div id="look" class="screen hidden">
+      <div class="l-ask" id="l-ask">『モナコ』の国旗はどっち？</div>
+      <div class="l-row">
+        <div class="l-card cur" data-c="0"><canvas width="250" height="170"></canvas><div class="l-lbl">◀</div></div>
+        <div class="l-card" data-c="1"><canvas width="250" height="170"></canvas><div class="l-lbl">▶</div></div>
+      </div>
+      <div class="l-fb" id="l-fb"></div>
+    </div>
+
+    <!-- 結果 -->
+    <div id="result" class="screen hidden">
+      <div class="panel">
+        <div class="r-title" id="r-title">🎉 けっか</div>
+        <div class="r-score" id="r-score">8 / 10</div>
+        <div class="r-sub" id="r-sub">ベスト 9 / 10</div>
+        <div class="btns">
+          <div class="rail-btn cur" data-act="retry">🔄 もういちど</div>
+          <div class="rail-btn ghost" data-act="title">◀ メニューへ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
